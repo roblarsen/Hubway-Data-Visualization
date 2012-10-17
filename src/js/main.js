@@ -31,9 +31,15 @@
                 } 
             });  
             map.setCenter(defaultPosition);
-            var DS = new GM.DirectionsService(),
-                DD = new GM.DirectionsRenderer();
+            var polylineOptions = new GM.Polyline({
+                 strokeColor: '#FF0000',
+                 strokeOpacity: .7,
+                 strokeWeight: 10
+                }),
+                DS = new GM.DirectionsService(),
+                DD = new GM.DirectionsRenderer( { polylineOptions : polylineOptions });
             DD.setMap(map);
+
             var request = {
               origin:defaultPosition,
               destination:position,
