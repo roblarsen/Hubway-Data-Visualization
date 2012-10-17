@@ -10,9 +10,9 @@
       console.log( "common.init" );
       $( "#map" ).height($( window ).height() );
       var GM = google.maps,
-          defaultPosition = new GM.LatLng( 42, -71 ),
+          defaultPosition = new GM.LatLng( 42.359 , -71.058 ),
           mapOptions = {
-            zoom: 12,
+            zoom: 16,
             center: defaultPosition,
             mapTypeId: GM.MapTypeId.ROADMAP
           },
@@ -30,7 +30,20 @@
                   }
                 } 
             });  
-            map.setCenter(position);
+            map.setCenter(defaultPosition);
+            var DS = new GM.DirectionsService(),
+                DD = new GM.DirectionsRenderer();
+            DD.setMap(map);
+            var request = {
+              origin:defaultPosition,
+              destination:position,
+              travelMode: GM.TravelMode.BICYCLING
+            };
+            DS.route(request, function(result, status) {
+              if (status == GM.DirectionsStatus.OK) {
+                DD.setDirections(result);
+              }
+            });
           },
           failure = function( error ){
           //handle errors
