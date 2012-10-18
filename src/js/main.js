@@ -10,7 +10,7 @@
       console.log( "common.init" );
       $( "#map" ).height($( window ).height() );
       var GM = google.maps,
-          defaultPosition = new GM.LatLng( 42.359 , -71.058 ),
+          defaultPosition = new GM.LatLng( 42.3520, -71.0560 ),
           mapOptions = {
             zoom: 16,
             center: defaultPosition,
