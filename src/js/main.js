@@ -19,43 +19,31 @@
         geocoder = new GM.Geocoder(),
         position, endPosition, marker, polylineOptions, DD, DS;
       $("#map").data("map", map)
-      for(var i = 0, len = data.stations.length; i < len; i++) {
+      for(var i = 0, len = 1; i < len; i++) {
         var ii = i;
-        geocoder.geocode({
-          'address': data.stations[i].name
-        }, function(results, status) {
-          console.log(results);
-          if(results) {
-            position = new GM.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+
+        console.log(data.stations[i].name)
+        console.log(data.stations[i].latLng)
+            position = new GM.LatLng(data.stations[i].latLng[0],data.stations[i].latLng[1]);
             marker = new GM.Marker({
               position: position,
               map: map,
-              title: results[0].formatted_name,
+              title: data.stations[ii].name,
               data: data.stations[ii].destinations
             });
             google.maps.event.addListener(marker, 'click', function() {
               for(var j = 0; j < 10; j++) {
-                var name = this.data[j].name;
-                geocoder.geocode({
-                  'address': name
-                }, function(results, status) {
-                  console.log(results);
-                  if(results) {
-                    endPosition = new GM.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+                var endPosition = new GM.LatLng(this.data[j].latLng[0],this.data[j].latLng[1]);
                     HW.common.renderer(position, endPosition)
                     marker = new GM.Marker({
                       position: endPosition,
                       map: map,
-                      title: results[0].formatted_name,
+                      title: this.data[j].name,
                     });
 
-                  }
-                });
 
               }
             });
-          }
-        });
       }
     },
     renderer: function(start, end) {
