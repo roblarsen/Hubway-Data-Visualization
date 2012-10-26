@@ -51,7 +51,7 @@
         polylineOptions, DD, DS, map = $("#map").data("map");
       var polylineOptions = new GM.Polyline({
         strokeColor: '#FF0000',
-        strokeOpacity: .7,
+        strokeOpacity: .5,
         strokeWeight: 10
       }),
         DS = new GM.DirectionsService(),
