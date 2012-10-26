@@ -5,7 +5,7 @@ var data = {
     "depts": "26555",
     "destinations": [{
       "name": "TD Garden",
-      "latLng": [42.366231,-71.060868],
+      "latLng": [42.3662,-71.0608],
       "trips": "2690"
     }, {
       "name": "Lewis Wharf - Atlantic Ave",

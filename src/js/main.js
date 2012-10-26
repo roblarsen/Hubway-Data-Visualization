@@ -22,8 +22,6 @@
       for(var i = 0, len = 1; i < len; i++) {
         var ii = i;
 
-        console.log(data.stations[i].name)
-        console.log(data.stations[i].latLng)
             position = new GM.LatLng(data.stations[i].latLng[0],data.stations[i].latLng[1]);
             marker = new GM.Marker({
               position: position,
@@ -32,7 +30,8 @@
               data: data.stations[ii].destinations
             });
             google.maps.event.addListener(marker, 'click', function() {
-              for(var j = 0; j < 10; j++) {
+              for(var j = 0; j < this.data.length; j++) {
+                
                 var endPosition = new GM.LatLng(this.data[j].latLng[0],this.data[j].latLng[1]);
                     HW.common.renderer(position, endPosition)
                     marker = new GM.Marker({
@@ -51,7 +50,7 @@
         polylineOptions, DD, DS, map = $("#map").data("map");
       var polylineOptions = new GM.Polyline({
         strokeColor: '#FF0000',
-        strokeOpacity: .7,
+        strokeOpacity: .4,
         strokeWeight: 10
       }),
         DS = new GM.DirectionsService(),
@@ -68,6 +67,8 @@
       DS.route(request, function(result, status) {
         if(status == GM.DirectionsStatus.OK) {
           DD.setDirections(result);
+        } else {
+
         }
       });
     }
