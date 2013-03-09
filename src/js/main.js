@@ -18,36 +18,51 @@
         map = new GM.Map(document.getElementById('map'), mapOptions),
         geocoder = new GM.Geocoder(),
         position, endPosition, marker, polylineOptions, DD, DS;
-      $("#map").data("map", map)
-      for(var i = 0, len = 1; i < len; i++) {
-        var ii = i;
+      $("#map").data("map", map);
+      var i = 0, timer;
 
+      function render(){
+        if (i == 10){
+          clearInterval(timer);
+          return;
+        }
+        createMarker(i);
+        i++;   
+      }
+      timer = setInterval(render, 10000);
+      function createMarker(i){
+            var marker, position,start,end;
             position = new GM.LatLng(data.stations[i].latLng[0],data.stations[i].latLng[1]);
             marker = new GM.Marker({
               position: position,
               map: map,
-              title: data.stations[ii].name,
-              data: data.stations[ii].destinations
+              title: data.stations[i].name,
+              data: data.stations[i].destinations
             });
-            google.maps.event.addListener(marker, 'click', function() {
-              for(var j = 0; j < this.data.length; j++) {
-                
-                var endPosition = new GM.LatLng(this.data[j].latLng[0],this.data[j].latLng[1]);
-                    HW.common.renderer(position, endPosition)
-                    marker = new GM.Marker({
-                      position: endPosition,
-                      map: map,
-                      title: this.data[j].name,
-                    });
-
-
+            var j = 0, len =data.stations[i].destinations.length, rendertimer;
+            function newrender(){
+              if (j == len){
+                clearInterval(rendertimer)
+              return;
               }
-            });
-      }
+              createRoutes(i,j,position);
+              j++;   
+            }
+            rendertimer = setInterval(newrender, 2000);
+        function createRoutes( i, j, start) {
+          start =position;
+          end =data.stations[i].destinations[j].latLng;
+          HW.common.renderer(start,end, map);
+        }
+          
+        
+       }  
+     
     },
     renderer: function(start, end) {
       var GM = google.maps,
         polylineOptions, DD, DS, map = $("#map").data("map");
+      end = new GM.LatLng(end[0],end[1]);
       var polylineOptions = new GM.Polyline({
         strokeColor: '#FF0000',
         strokeOpacity: .4,
@@ -58,7 +73,6 @@
           polylineOptions: polylineOptions
         });
       DD.setMap(map);
-
       var request = {
         origin: start,
         destination: end,
@@ -68,7 +82,7 @@
         if(status == GM.DirectionsStatus.OK) {
           DD.setDirections(result);
         } else {
-
+          console.log("throttle")
         }
       });
     }
