@@ -19,7 +19,8 @@
         geocoder = new GM.Geocoder(),
         position, endPosition, marker, polylineOptions, DD, DS;
       $("#map").data("map", map);
-      var i = 0, timer;
+      createMarker(0);
+      var i = 1, timer;
 
       function render(){
         if (i == 10){
@@ -31,8 +32,9 @@
       }
       timer = setInterval(render, 10000);
       function createMarker(i){
-            var marker, position,start,end;
+            var marker, position,start,end, dist;
             position = new GM.LatLng(data.stations[i].latLng[0],data.stations[i].latLng[1]);
+           
             marker = new GM.Marker({
               position: position,
               map: map,
@@ -41,7 +43,7 @@
             });
             //http://www.movable-type.co.uk/scripts/latlong.html
             //http://stackoverflow.com/questions/27928/how-do-i-calculate-distance-between-two-latitude-longitude-points
-                  function distance(lat1,lon1,lat2,lon2) {
+function distance(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
   var dLon = deg2rad(lon2-lon1); 
@@ -58,29 +60,33 @@
 function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
+
             var j = 0, len =data.stations[i].destinations.length, rendertimer;
             function newrender(){
               if (j == len){
                 clearInterval(rendertimer)
               return;
               }
-              createRoutes(i,j,position);
+              dist = distance(data.stations[i].latLng[0],data.stations[i].latLng[1], data.stations[i].destinations[j].latLng[0], data.stations[i].destinations[j].latLng[1] )
+              createRoutes(i,j,position, dist);
               j++;   
             }
             rendertimer = setInterval(newrender, 2000);
-        function createRoutes( i, j, start) {
+        function createRoutes( i, j, start, distance) {
           start =position;
           end =data.stations[i].destinations[j].latLng;
 
           var trips =data.stations[i].destinations[j].trips;
-          HW.common.renderer(start,end, trips, j);
+         HW.common.renderer(start,end, trips, i, distance, data.stations[i].name, data.stations[i].destinations[j].name);
+
         }
           
         
        }  
      
     },
-    renderer: function(start, end, trips, index) {
+    renderer: function(start, end, trips, index, distance,startName,endName) {
+
       var GM = google.maps,
         polylineOptions, DD, DS, map = $("#map").data("map"),
         colors = ["#B22937",
@@ -105,7 +111,8 @@ function deg2rad(deg) {
       }),
         DS = new GM.DirectionsService(),
         DD = new GM.DirectionsRenderer({
-          polylineOptions: polylineOptions
+          polylineOptions: polylineOptions,
+          markerOptions : { icon : "img/Hubwaylogo.png" }
         });
       DD.setMap(map);
       var request = {
@@ -113,14 +120,17 @@ function deg2rad(deg) {
         destination: end,
         travelMode: GM.TravelMode.BICYCLING
       };
-
+      var table 
       DS.route(request, function(result, status) {
         if(status == GM.DirectionsStatus.OK) {
           DD.setDirections(result);
-          //console.log(result.trips[0].routes[0].distance.value);
+          var delta = result.routes[0].legs[0].distance.value/(distance * 1000);
+         console.log("<tr><td>"+startName+"</td><td>"+endName+"</td><td>"+delta.toPrecision(3)+"</td></tr>")
         } else {
         }
+
       });
+    
     }
 
   }
