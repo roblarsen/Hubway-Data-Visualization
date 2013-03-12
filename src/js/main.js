@@ -1,5 +1,4 @@
-;
-(function(window, document, $, undefined) {
+;(function(window, document, $, undefined) {
   "use strict";
   if(window.HW === undefined) {
     window.HW = {};
@@ -7,9 +6,9 @@
   var HW = window.HW;
   HW.common = {
     init: function() {
-      $("#map").height($(window).height());
+      $( "#map" ).height( $( window ).height() );
       var GM = google.maps,
-        defaultPosition = new GM.LatLng(42.3520, -71.0560),
+        defaultPosition = new GM.LatLng( 42.3520, -71.0560 ),
         mapOptions = {
           zoom: 12,
           center: defaultPosition,
@@ -25,6 +24,7 @@
       function render(){
         if (i == 10){
           clearInterval(timer);
+          map.fitBounds(this.map.bounds);
           return;
         }
         createMarker(i);
@@ -124,14 +124,10 @@ function deg2rad(deg) {
       DS.route(request, function(result, status) {
         if(status == GM.DirectionsStatus.OK) {
           DD.setDirections(result);
-          var delta = result.routes[0].legs[0].distance.value/(distance * 1000);
-         console.log("<tr><td>"+startName+"</td><td>"+endName+"</td><td>"+delta.toPrecision(3)+"</td></tr>")
-        } else {
+          //var delta = result.routes[0].legs[0].distance.value/(distance * 1000);
+          //console.log("<tr><td>"+startName+"</td><td>"+endName+"</td><td>"+delta.toPrecision(3)+"</td></tr>")
         }
-
       });
-    
     }
-
   }
 }(window, document, jQuery));
