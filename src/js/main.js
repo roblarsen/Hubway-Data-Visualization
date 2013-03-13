@@ -16,15 +16,15 @@
         },
         map = new GM.Map(document.getElementById('map'), mapOptions),
         geocoder = new GM.Geocoder(),
-        position, endPosition, marker, polylineOptions, DD, DS;
-      $("#map").data("map", map);
+        position, endPosition, marker, polylineOptions, DD, DS, coords;
+        data.bounds = new google.maps.LatLngBounds();
+        $("#map").data("map", map);
       createMarker(0);
       var i = 1, timer;
 
       function render(){
         if (i == 10){
           clearInterval(timer);
-          map.fitBounds(this.map.bounds);
           return;
         }
         createMarker(i);
@@ -65,6 +65,9 @@ function deg2rad(deg) {
             function newrender(){
               if (j == len){
                 clearInterval(rendertimer)
+                if (i==9){
+                  map.fitBounds(data.bounds)
+                }
               return;
               }
               dist = distance(data.stations[i].latLng[0],data.stations[i].latLng[1], data.stations[i].destinations[j].latLng[0], data.stations[i].destinations[j].latLng[1] )
@@ -89,24 +92,25 @@ function deg2rad(deg) {
 
       var GM = google.maps,
         polylineOptions, DD, DS, map = $("#map").data("map"),
-        colors = ["#B22937",
-        "#DE5003",
-        "#80C837",
-        "#229F6E",
-        "#60B6CA",
-        "#6F6DA7",
-        "#1F1D6D",
-        "#80529A",
-        "#A6358C",
-        "#A2395B"
-
-
+        colors = [
+        "#630000",
+        "#632910",
+        "#524818",
+        "#314208",
+        "#103910",
+        "#003139",
+        "#00394A",
+        "#00184A",
+        "#180042",
+        "#520031"
         ];
-
+      
       end = new GM.LatLng(end[0],end[1]);
+      data.bounds.extend(end);
+     
       var polylineOptions = new GM.Polyline({
         strokeColor: colors[index],
-        strokeOpacity: .4,
+        strokeOpacity: .5,
         strokeWeight: trips/100
       }),
         DS = new GM.DirectionsService(),
